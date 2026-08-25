@@ -11,19 +11,31 @@
 
 ## 📸 Visual Previews & Admin Architecture
 
-### 1. Dashboard Health & Staging Guardrails
+### 1. WordPress Admin Dashboard Health & Staging Guardrails
 ![WP Clinical Launchpad Admin Dashboard](assets/admin-dashboard.png)
 *Automated pre-launch guardrail alerts: Kinsta staging hostname leak detection, noindex validation, and clinical schema overview.*
 
 ---
 
-### 2. Configuration & Performance Engine Settings
+### 2. Elementor Editor Clinical Integration & Layout Controls
+![Elementor Editor Procedure Integration](assets/elementor-editor.png)
+*Direct Elementor Pro integration allowing procedure taxonomy assignment, asynchronous CSS preload overrides, and font optimizations.*
+
+---
+
+### 3. Lighthouse & Core Web Vitals Audit Report (96 Mobile Score)
+![Lighthouse Core Web Vitals Report](assets/pagespeed-audit.png)
+*Validated 96 Mobile Performance, 100 SEO score, 1.2s LCP, and zero cumulative layout shift (CLS).*
+
+---
+
+### 4. Configuration & Performance Engine Settings
 ![WP Clinical Launchpad Settings Panel](assets/settings-panel.png)
 *Granular control over medical taxonomy injection, asynchronous Elementor CSS deferral, and FontAwesome bundle stripping.*
 
 ---
 
-### 3. Google Rich Results & JSON-LD Schema Inspection
+### 5. Google Rich Results & JSON-LD Schema Inspection
 ![Clinical Schema JSON-LD Inspector](assets/schema-inspector.png)
 *Valid `schema.org/MedicalWebPage` and `MedicalProcedure` payload output for ophthalmology & laser eye surgery procedures.*
 
@@ -55,6 +67,8 @@ wp-clinical-launchpad/
 │   └── LaunchpadUnitTest.php          # Automated unit test suite
 ├── assets/
 │   ├── admin-dashboard.png            # Visual dashboard preview
+│   ├── elementor-editor.png           # Elementor Pro editor panel preview
+│   ├── pagespeed-audit.png            # Lighthouse 96 Mobile Score report
 │   ├── settings-panel.png             # Configuration UI preview
 │   └── schema-inspector.png           # JSON-LD Schema validation preview
 ├── composer.json                      # PSR-4 Autoloading & dev dependencies
@@ -103,4 +117,4 @@ done
 ---
 
 ## 📄 License
-MIT © [Nadim Faruque](https://github.com/nadimtuhin)
+MIT © [Nadim Tuhin](https://github.com/nadimtuhin)
