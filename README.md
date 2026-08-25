@@ -9,11 +9,23 @@
 
 ---
 
-## 📸 Admin Dashboard Preview
+## 📸 Visual Previews & Admin Architecture
 
+### 1. Dashboard Health & Staging Guardrails
 ![WP Clinical Launchpad Admin Dashboard](assets/admin-dashboard.png)
+*Automated pre-launch guardrail alerts: Kinsta staging hostname leak detection, noindex validation, and clinical schema overview.*
 
-*Automated pre-launch guardrail alerts, Kinsta staging leak detection, and clinical schema mapping widget inside WordPress Admin.*
+---
+
+### 2. Configuration & Performance Engine Settings
+![WP Clinical Launchpad Settings Panel](assets/settings-panel.png)
+*Granular control over medical taxonomy injection, asynchronous Elementor CSS deferral, and FontAwesome bundle stripping.*
+
+---
+
+### 3. Google Rich Results & JSON-LD Schema Inspection
+![Clinical Schema JSON-LD Inspector](assets/schema-inspector.png)
+*Valid `schema.org/MedicalWebPage` and `MedicalProcedure` payload output for ophthalmology & laser eye surgery procedures.*
 
 ---
 
@@ -36,12 +48,15 @@ wp-clinical-launchpad/
 ├── includes/
 │   ├── class-schema-manager.php       # Dynamic schema.org/MedicalWebPage JSON-LD builder
 │   ├── class-performance-optimizer.php# Elementor stylesheet deferral & CSS cleanup
-│   └── class-launch-guardrails.php    # Admin pre-launch audit & Kinsta staging checks
+│   ├── class-launch-guardrails.php    # Admin pre-launch audit & Kinsta staging checks
+│   └── class-admin-settings.php       # WordPress admin settings & taxonomy management
 ├── tests/
 │   ├── bootstrap.php                  # PHPUnit WP environment stubs
 │   └── LaunchpadUnitTest.php          # Automated unit test suite
 ├── assets/
-│   └── admin-dashboard.png            # Visual dashboard preview
+│   ├── admin-dashboard.png            # Visual dashboard preview
+│   ├── settings-panel.png             # Configuration UI preview
+│   └── schema-inspector.png           # JSON-LD Schema validation preview
 ├── composer.json                      # PSR-4 Autoloading & dev dependencies
 ├── phpunit.xml                        # PHPUnit test runner config
 └── .github/workflows/ci.yml           # Automated PHP 8.1 / 8.2 / 8.3 test matrix
@@ -64,6 +79,10 @@ wp-clinical-launchpad/
   - Staging host URLs (e.g. `kinsta.cloud`, `staging`).
   - Missing SSL / non-HTTPS site URLs.
   - Unset or missing Elementor Global Kit tokens.
+
+### 4. Admin Settings & Controls (`AdminSettings`)
+- WordPress admin interface under `Tools > Clinical Launchpad`.
+- Live toggles for CSS preload strategies, icon font purging, and practice specialties.
 
 ---
 

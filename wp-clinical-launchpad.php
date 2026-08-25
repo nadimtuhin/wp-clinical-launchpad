@@ -16,12 +16,14 @@ if (!defined('ABSPATH')) {
 require_once __DIR__ . '/includes/class-schema-manager.php';
 require_once __DIR__ . '/includes/class-performance-optimizer.php';
 require_once __DIR__ . '/includes/class-launch-guardrails.php';
+require_once __DIR__ . '/includes/class-admin-settings.php';
 
 final class WP_Clinical_Launchpad {
     private static ?WP_Clinical_Launchpad $instance = null;
     private \WPClinicalLaunchpad\SchemaManager $schema;
     private \WPClinicalLaunchpad\PerformanceOptimizer $perf;
     private \WPClinicalLaunchpad\LaunchGuardrails $guardrails;
+    private \WPClinicalLaunchpad\AdminSettings $settings;
 
     public static function instance(): WP_Clinical_Launchpad {
         if (self::$instance === null) {
@@ -34,6 +36,7 @@ final class WP_Clinical_Launchpad {
         $this->schema = new \WPClinicalLaunchpad\SchemaManager();
         $this->perf = new \WPClinicalLaunchpad\PerformanceOptimizer();
         $this->guardrails = new \WPClinicalLaunchpad\LaunchGuardrails();
+        $this->settings = new \WPClinicalLaunchpad\AdminSettings();
 
         $this->init();
     }
@@ -42,6 +45,7 @@ final class WP_Clinical_Launchpad {
         $this->schema->register();
         $this->perf->register();
         $this->guardrails->register();
+        $this->settings->register();
     }
 }
 
