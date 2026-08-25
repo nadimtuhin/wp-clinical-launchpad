@@ -16,4 +16,7 @@ jobs:
         with:
           php-version: '8.2'
       - name: Syntax Lint
-        run: php -l wp-clinical-launchpad.php
+        run: |
+          for file in $(find . -name "*.php" -not -path "./vendor/*"); do
+            php -l "$file" || exit 1
+          done
