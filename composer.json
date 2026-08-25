@@ -1,0 +1,33 @@
+{
+  "name": "nadimtuhin/wp-clinical-launchpad",
+  "description": "Pre-launch QA, clinical schema injection, Elementor asset optimization, and staging guardrails for medical websites.",
+  "type": "wordpress-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Nadim Faruque",
+      "homepage": "https://github.com/nadimtuhin"
+    }
+  ],
+  "require": {
+    "php": ">=8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.6 || ^10.0",
+    "mockery/mockery": "^1.6",
+    "brain/monkey": "^2.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "WPClinicalLaunchpad\\": "includes/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "WPClinicalLaunchpad\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
+}

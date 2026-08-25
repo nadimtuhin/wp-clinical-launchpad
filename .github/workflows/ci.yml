@@ -7,16 +7,22 @@ on:
     branches: [ main ]
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3']
     steps:
       - uses: actions/checkout@v4
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: ${{ matrix.php }}
+          tools: phpunit
       - name: Syntax Lint
         run: |
           for file in $(find . -name "*.php" -not -path "./vendor/*"); do
             php -l "$file" || exit 1
           done
+      - name: Run Unit Tests
+        run: phpunit

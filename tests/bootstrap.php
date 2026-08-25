@@ -1,0 +1,57 @@
+<?php
+/**
+ * PHPUnit Bootstrap
+ */
+
+require_once __DIR__ . '/../includes/class-schema-manager.php';
+require_once __DIR__ . '/../includes/class-performance-optimizer.php';
+require_once __DIR__ . '/../includes/class-launch-guardrails.php';
+
+// Stub standard WordPress functions for unit tests
+if (!function_exists('get_post_meta')) {
+    function get_post_meta($post_id, $key = '', $single = false) {
+        return $GLOBALS['wp_mock_meta'][$key] ?? '';
+    }
+}
+
+if (!function_exists('get_the_title')) {
+    function get_the_title($post = 0) {
+        return 'Cataract Surgery';
+    }
+}
+
+if (!function_exists('get_permalink')) {
+    function get_permalink($post = 0) {
+        return 'https://example-eye-clinic.com/cataract-surgery';
+    }
+}
+
+if (!function_exists('get_the_modified_date')) {
+    function get_the_modified_date($format = 'U', $post = null) {
+        return '2026-08-25T10:00:00+00:00';
+    }
+}
+
+if (!function_exists('get_option')) {
+    function get_option($option, $default = false) {
+        return $GLOBALS['wp_mock_options'][$option] ?? $default;
+    }
+}
+
+if (!function_exists('is_ssl')) {
+    function is_ssl() {
+        return $GLOBALS['wp_mock_is_ssl'] ?? true;
+    }
+}
+
+if (!function_exists('esc_url')) {
+    function esc_url($url) {
+        return $url;
+    }
+}
+
+if (!function_exists('esc_html')) {
+    function esc_html($text) {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
