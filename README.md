@@ -9,6 +9,14 @@
 
 ---
 
+## 📸 Admin Dashboard Preview
+
+![WP Clinical Launchpad Admin Dashboard](assets/admin-dashboard.png)
+
+*Automated pre-launch guardrail alerts, Kinsta staging leak detection, and clinical schema mapping widget inside WordPress Admin.*
+
+---
+
 ## 🏥 Architecture & Problem Statement
 
 Medical and clinical practices (ophthalmology, refractive surgery, dental, aesthetics) face unique challenges when launching custom Elementor websites:
@@ -29,7 +37,14 @@ wp-clinical-launchpad/
 │   ├── class-schema-manager.php       # Dynamic schema.org/MedicalWebPage JSON-LD builder
 │   ├── class-performance-optimizer.php# Elementor stylesheet deferral & CSS cleanup
 │   └── class-launch-guardrails.php    # Admin pre-launch audit & Kinsta staging checks
-└── .github/workflows/ci.yml           # Automated PHP 8.2 syntax & lint matrix
+├── tests/
+│   ├── bootstrap.php                  # PHPUnit WP environment stubs
+│   └── LaunchpadUnitTest.php          # Automated unit test suite
+├── assets/
+│   └── admin-dashboard.png            # Visual dashboard preview
+├── composer.json                      # PSR-4 Autoloading & dev dependencies
+├── phpunit.xml                        # PHPUnit test runner config
+└── .github/workflows/ci.yml           # Automated PHP 8.1 / 8.2 / 8.3 test matrix
 ```
 
 ### 1. Clinical Schema Engine (`SchemaManager`)
@@ -54,9 +69,14 @@ wp-clinical-launchpad/
 
 ## 🧪 Testing & Validation
 
-Run local syntax and lint verification:
+Run PHPUnit test suite:
 ```bash
-for file in $(find . -name "*.php"); do
+phpunit
+```
+
+Run PHP syntax lint:
+```bash
+for file in $(find . -name "*.php" -not -path "./vendor/*"); do
   php -l "$file"
 done
 ```
