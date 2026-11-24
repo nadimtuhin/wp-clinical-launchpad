@@ -22,7 +22,7 @@ final class SchemaManager {
         }
 
         echo "\n<!-- WP Clinical Launchpad: Medical Structured Data -->\n";
-        echo '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "</script>\n";
+        echo '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) . "</script>\n";
     }
 
     public function build_schema(?\WP_Post $post): array {

@@ -29,6 +29,24 @@ class LaunchpadUnitTest extends TestCase {
         $this->assertEquals('Patient', $schema['audience']['audienceType']);
     }
 
+    public function test_schema_output_cannot_break_out_of_script_tag(): void {
+        $schema_mgr = new SchemaManager();
+        $GLOBALS['wp_mock_meta']['_clinical_specialty'] = '</script><script>alert(1)</script>';
+        $GLOBALS['post'] = new \WP_Post((object) ['ID' => 42]);
+
+        ob_start();
+        $schema_mgr->render_schema();
+        $output = ob_get_clean();
+        unset($GLOBALS['post']);
+
+        $this->assertSame(1, substr_count(strtolower($output), '</script'));
+        $this->assertStringNotContainsString('<script>alert(1)', $output);
+
+        preg_match('#<script type="application/ld\+json">(.*)</script>#s', $output, $m);
+        $decoded = json_decode($m[1], true);
+        $this->assertSame('</script><script>alert(1)</script>', $decoded['about']['relevantSpecialty']['name']);
+    }
+
     public function test_guardrails_catches_noindex_and_staging_urls(): void {
         $guardrails = new LaunchGuardrails();
         $GLOBALS['wp_mock_options']['blog_public'] = '0';

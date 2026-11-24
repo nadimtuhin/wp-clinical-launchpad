@@ -78,3 +78,9 @@ if (!class_exists('WP_Post')) {
         }
     }
 }
+
+if (!function_exists('is_singular')) {
+    function is_singular($post_types = '') {
+        return $GLOBALS['wp_mock_is_singular'] ?? true;
+    }
+}
