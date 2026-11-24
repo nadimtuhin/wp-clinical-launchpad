@@ -10,6 +10,7 @@ if (!defined('ABSPATH')) {
 require_once __DIR__ . '/../includes/class-schema-manager.php';
 require_once __DIR__ . '/../includes/class-performance-optimizer.php';
 require_once __DIR__ . '/../includes/class-launch-guardrails.php';
+require_once __DIR__ . '/../includes/class-admin-settings.php';
 
 // Stub standard WordPress functions for unit tests
 if (!function_exists('get_post_meta')) {
@@ -82,5 +83,11 @@ if (!class_exists('WP_Post')) {
 if (!function_exists('is_singular')) {
     function is_singular($post_types = '') {
         return $GLOBALS['wp_mock_is_singular'] ?? true;
+    }
+}
+
+if (!function_exists('register_setting')) {
+    function register_setting($option_group, $option_name, $args = []) {
+        $GLOBALS['wp_mock_registered_settings'][$option_name] = $args;
     }
 }

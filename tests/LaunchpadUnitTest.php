@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 use WPClinicalLaunchpad\SchemaManager;
 use WPClinicalLaunchpad\LaunchGuardrails;
 use WPClinicalLaunchpad\PerformanceOptimizer;
+use WPClinicalLaunchpad\AdminSettings;
 
 class LaunchpadUnitTest extends TestCase {
     protected function setUp(): void {
@@ -45,6 +46,26 @@ class LaunchpadUnitTest extends TestCase {
         preg_match('#<script type="application/ld\+json">(.*)</script>#s', $output, $m);
         $decoded = json_decode($m[1], true);
         $this->assertSame('</script><script>alert(1)</script>', $decoded['about']['relevantSpecialty']['name']);
+    }
+
+    public function test_settings_are_registered_with_sanitizers(): void {
+        $GLOBALS['wp_mock_registered_settings'] = [];
+        (new AdminSettings())->register_settings();
+        $settings = $GLOBALS['wp_mock_registered_settings'];
+
+        $specialty = $settings['wp_clinical_specialty']['sanitize_callback'] ?? null;
+        $this->assertIsCallable($specialty);
+        $this->assertSame('Dentistry', $specialty('Dentistry'));
+        $this->assertSame('Ophthalmology', $specialty('<script>alert(1)</script>'));
+        $this->assertSame('Ophthalmology', $specialty(['array']));
+
+        foreach (['wp_clinical_defer_elementor_css', 'wp_clinical_purge_fa_icons', 'wp_clinical_enforce_https'] as $option) {
+            $sanitize = $settings[$option]['sanitize_callback'] ?? null;
+            $this->assertIsCallable($sanitize, $option);
+            $this->assertSame('1', $sanitize('1'));
+            $this->assertSame('0', $sanitize(null));
+            $this->assertSame('0', $sanitize('"><img src=x onerror=alert(1)>'));
+        }
     }
 
     public function test_guardrails_catches_noindex_and_staging_urls(): void {

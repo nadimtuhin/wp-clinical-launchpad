@@ -22,11 +22,36 @@ final class AdminSettings {
         );
     }
 
+    private const SPECIALTIES = ['Ophthalmology', 'Dermatology', 'Dentistry', 'GeneralSurgery'];
+
     public function register_settings(): void {
-        register_setting('wp_clinical_settings_group', 'wp_clinical_specialty');
-        register_setting('wp_clinical_settings_group', 'wp_clinical_defer_elementor_css');
-        register_setting('wp_clinical_settings_group', 'wp_clinical_purge_fa_icons');
-        register_setting('wp_clinical_settings_group', 'wp_clinical_enforce_https');
+        register_setting('wp_clinical_settings_group', 'wp_clinical_specialty', [
+            'type' => 'string',
+            'sanitize_callback' => [$this, 'sanitize_specialty'],
+            'default' => 'Ophthalmology',
+        ]);
+
+        foreach (['wp_clinical_defer_elementor_css', 'wp_clinical_purge_fa_icons', 'wp_clinical_enforce_https'] as $option) {
+            register_setting('wp_clinical_settings_group', $option, [
+                'type' => 'string',
+                'sanitize_callback' => [$this, 'sanitize_checkbox'],
+                'default' => '1',
+            ]);
+        }
+    }
+
+    /**
+     * Only accept one of the specialties offered in the settings form.
+     */
+    public function sanitize_specialty($value): string {
+        return is_string($value) && in_array($value, self::SPECIALTIES, true) ? $value : 'Ophthalmology';
+    }
+
+    /**
+     * Store checkboxes as '1' or '0' (an unchecked box submits nothing).
+     */
+    public function sanitize_checkbox($value): string {
+        return $value === '1' || $value === 1 || $value === true ? '1' : '0';
     }
 
     public function render_settings_page(): void {
