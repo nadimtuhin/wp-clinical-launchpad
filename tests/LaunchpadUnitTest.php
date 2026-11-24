@@ -94,6 +94,19 @@ class LaunchpadUnitTest extends TestCase {
         $this->assertCount(4, $audit['passed']);
     }
 
+    public function test_dashboard_widget_is_only_added_for_administrators(): void {
+        $guardrails = new LaunchGuardrails();
+
+        $GLOBALS['wp_mock_dashboard_widgets'] = [];
+        $GLOBALS['wp_mock_user_caps'] = ['read'];
+        $guardrails->add_dashboard_widget();
+        $this->assertArrayNotHasKey('wp_clinical_launchpad_widget', $GLOBALS['wp_mock_dashboard_widgets']);
+
+        $GLOBALS['wp_mock_user_caps'] = ['read', 'manage_options'];
+        $guardrails->add_dashboard_widget();
+        $this->assertArrayHasKey('wp_clinical_launchpad_widget', $GLOBALS['wp_mock_dashboard_widgets']);
+    }
+
     public function test_performance_optimizer_defers_elementor_styles(): void {
         $optimizer = new PerformanceOptimizer();
         $input_html = '<link rel="stylesheet" id="elementor-post-42-css" href="https://example.com/style.css" type="text/css" media="all" />';

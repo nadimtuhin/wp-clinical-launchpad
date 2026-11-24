@@ -91,3 +91,15 @@ if (!function_exists('register_setting')) {
         $GLOBALS['wp_mock_registered_settings'][$option_name] = $args;
     }
 }
+
+if (!function_exists('current_user_can')) {
+    function current_user_can($capability, ...$args) {
+        return in_array($capability, $GLOBALS['wp_mock_user_caps'] ?? [], true);
+    }
+}
+
+if (!function_exists('wp_add_dashboard_widget')) {
+    function wp_add_dashboard_widget($widget_id, $widget_name, $callback, ...$args) {
+        $GLOBALS['wp_mock_dashboard_widgets'][$widget_id] = $callback;
+    }
+}
