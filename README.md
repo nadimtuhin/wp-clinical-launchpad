@@ -102,10 +102,12 @@ wp-clinical-launchpad/
 
 ## 🧪 Testing & Validation
 
-Run PHPUnit test suite:
+Install the dev dependencies (PHPUnit), then run the test suite:
 ```bash
-phpunit
+composer install
+vendor/bin/phpunit
 ```
+(`composer test` runs the same suite.)
 
 Run PHP syntax lint:
 ```bash

@@ -67,6 +67,12 @@ final class LaunchGuardrails {
     }
 
     public function add_dashboard_widget(): void {
+        // The audit reveals the site URL, staging host and configuration gaps;
+        // keep it to the same audience as the admin notice.
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
         wp_add_dashboard_widget(
             'wp_clinical_launchpad_widget',
             '🏥 Clinical Launchpad — Launch Readiness Checklist',
@@ -75,6 +81,10 @@ final class LaunchGuardrails {
     }
 
     public function render_dashboard_widget(): void {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+
         $audit = $this->run_audit();
         echo '<div style="font-size: 13px;">';
         if (!empty($audit['issues'])) {

@@ -18,11 +18,18 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          tools: phpunit
+          tools: composer
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
       - name: Syntax Lint
         run: |
           for file in $(find . -name "*.php" -not -path "./vendor/*"); do
             php -l "$file" || exit 1
           done
       - name: Run Unit Tests
-        run: phpunit
+        # A bare exit() while loading code (e.g. an ABSPATH guard) ends PHPUnit
+        # with status 0 before any test runs, so also require the JUnit report
+        # to exist and to contain at least one test.
+        run: |
+          vendor/bin/phpunit --fail-on-empty-test-suite --log-junit build/junit.xml
+          grep -Eq '<testsuite [^>]*tests="[1-9]' build/junit.xml

@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 use WPClinicalLaunchpad\SchemaManager;
 use WPClinicalLaunchpad\LaunchGuardrails;
 use WPClinicalLaunchpad\PerformanceOptimizer;
+use WPClinicalLaunchpad\AdminSettings;
 
 class LaunchpadUnitTest extends TestCase {
     protected function setUp(): void {
@@ -18,7 +19,7 @@ class LaunchpadUnitTest extends TestCase {
         $GLOBALS['wp_mock_meta']['_clinical_specialty'] = 'Ophthalmology';
         $GLOBALS['wp_mock_meta']['_clinical_procedure_type'] = 'Laser Eye Procedure';
 
-        $fake_post = (object) ['ID' => 42];
+        $fake_post = new \WP_Post((object) ['ID' => 42]);
         $schema = $schema_mgr->build_schema($fake_post);
 
         $this->assertEquals('https://schema.org', $schema['@context']);
@@ -27,6 +28,44 @@ class LaunchpadUnitTest extends TestCase {
         $this->assertEquals('Laser Eye Procedure', $schema['about']['procedureType']);
         $this->assertEquals('Ophthalmology', $schema['about']['relevantSpecialty']['name']);
         $this->assertEquals('Patient', $schema['audience']['audienceType']);
+    }
+
+    public function test_schema_output_cannot_break_out_of_script_tag(): void {
+        $schema_mgr = new SchemaManager();
+        $GLOBALS['wp_mock_meta']['_clinical_specialty'] = '</script><script>alert(1)</script>';
+        $GLOBALS['post'] = new \WP_Post((object) ['ID' => 42]);
+
+        ob_start();
+        $schema_mgr->render_schema();
+        $output = ob_get_clean();
+        unset($GLOBALS['post']);
+
+        $this->assertSame(1, substr_count(strtolower($output), '</script'));
+        $this->assertStringNotContainsString('<script>alert(1)', $output);
+
+        preg_match('#<script type="application/ld\+json">(.*)</script>#s', $output, $m);
+        $decoded = json_decode($m[1], true);
+        $this->assertSame('</script><script>alert(1)</script>', $decoded['about']['relevantSpecialty']['name']);
+    }
+
+    public function test_settings_are_registered_with_sanitizers(): void {
+        $GLOBALS['wp_mock_registered_settings'] = [];
+        (new AdminSettings())->register_settings();
+        $settings = $GLOBALS['wp_mock_registered_settings'];
+
+        $specialty = $settings['wp_clinical_specialty']['sanitize_callback'] ?? null;
+        $this->assertIsCallable($specialty);
+        $this->assertSame('Dentistry', $specialty('Dentistry'));
+        $this->assertSame('Ophthalmology', $specialty('<script>alert(1)</script>'));
+        $this->assertSame('Ophthalmology', $specialty(['array']));
+
+        foreach (['wp_clinical_defer_elementor_css', 'wp_clinical_purge_fa_icons', 'wp_clinical_enforce_https'] as $option) {
+            $sanitize = $settings[$option]['sanitize_callback'] ?? null;
+            $this->assertIsCallable($sanitize, $option);
+            $this->assertSame('1', $sanitize('1'));
+            $this->assertSame('0', $sanitize(null));
+            $this->assertSame('0', $sanitize('"><img src=x onerror=alert(1)>'));
+        }
     }
 
     public function test_guardrails_catches_noindex_and_staging_urls(): void {
@@ -53,6 +92,19 @@ class LaunchpadUnitTest extends TestCase {
 
         $this->assertEmpty($audit['issues']);
         $this->assertCount(4, $audit['passed']);
+    }
+
+    public function test_dashboard_widget_is_only_added_for_administrators(): void {
+        $guardrails = new LaunchGuardrails();
+
+        $GLOBALS['wp_mock_dashboard_widgets'] = [];
+        $GLOBALS['wp_mock_user_caps'] = ['read'];
+        $guardrails->add_dashboard_widget();
+        $this->assertArrayNotHasKey('wp_clinical_launchpad_widget', $GLOBALS['wp_mock_dashboard_widgets']);
+
+        $GLOBALS['wp_mock_user_caps'] = ['read', 'manage_options'];
+        $guardrails->add_dashboard_widget();
+        $this->assertArrayHasKey('wp_clinical_launchpad_widget', $GLOBALS['wp_mock_dashboard_widgets']);
     }
 
     public function test_performance_optimizer_defers_elementor_styles(): void {
