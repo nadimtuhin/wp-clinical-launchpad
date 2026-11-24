@@ -3,6 +3,10 @@
  * PHPUnit Bootstrap
  */
 
+if (!defined('ABSPATH')) {
+    define('ABSPATH', __DIR__ . '/');
+}
+
 require_once __DIR__ . '/../includes/class-schema-manager.php';
 require_once __DIR__ . '/../includes/class-performance-optimizer.php';
 require_once __DIR__ . '/../includes/class-launch-guardrails.php';
@@ -53,5 +57,24 @@ if (!function_exists('esc_url')) {
 if (!function_exists('esc_html')) {
     function esc_html($text) {
         return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (!function_exists('is_admin')) {
+    function is_admin() {
+        return $GLOBALS['wp_mock_is_admin'] ?? false;
+    }
+}
+
+if (!class_exists('WP_Post')) {
+    // Minimal stand-in for WordPress core's final WP_Post class.
+    class WP_Post {
+        public $ID = 0;
+
+        public function __construct($post = null) {
+            foreach ((array) $post as $key => $value) {
+                $this->$key = $value;
+            }
+        }
     }
 }

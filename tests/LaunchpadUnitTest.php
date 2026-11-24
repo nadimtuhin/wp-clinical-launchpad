@@ -18,7 +18,7 @@ class LaunchpadUnitTest extends TestCase {
         $GLOBALS['wp_mock_meta']['_clinical_specialty'] = 'Ophthalmology';
         $GLOBALS['wp_mock_meta']['_clinical_procedure_type'] = 'Laser Eye Procedure';
 
-        $fake_post = (object) ['ID' => 42];
+        $fake_post = new \WP_Post((object) ['ID' => 42]);
         $schema = $schema_mgr->build_schema($fake_post);
 
         $this->assertEquals('https://schema.org', $schema['@context']);
